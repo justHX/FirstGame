@@ -5,10 +5,7 @@
  */
 package firstgame;
 
-/**
- *
- * @author hulk-
- */
+
 public class GameMap {
     
     public int[][] map;

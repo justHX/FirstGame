@@ -9,17 +9,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- *
- * @author hulk-
- */
+
 public class FieldGame extends JFrame{
 
-     private static final int WIDTH = 600;
-    private static final int HEIGHT = 600;
+     private static final int WIDTH = 1800;
+    private static final int HEIGHT = 1000;
 
     private GameMap gm;
     private PaintMap map;
@@ -34,7 +30,7 @@ public class FieldGame extends JFrame{
         int y = screenSize.height/2 - HEIGHT/2;
         this.setBounds(x, y, WIDTH, HEIGHT);
         
-        map = new PaintMap(gm.mapWidth, gm.mapHeight, 500, 500);
+        map = new PaintMap(gm.mapWidth, gm.mapHeight, 960, 960);
         
          JPanel centerPanel = new JPanel() {{
             setLayout(new FlowLayout(FlowLayout.CENTER));
