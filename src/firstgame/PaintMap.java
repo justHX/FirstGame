@@ -18,16 +18,19 @@ import javax.swing.border.MatteBorder;
 
 public class PaintMap extends JPanel {
     
-    private int r; //переменная с данным уникальным названием используется для рандома
+   
     private int thisY = 0; //текущая координата Y персонажа
     private int thisX = 3; //текущая координата X персонажа
     private int cellSize;
     private int mapWidth, mapHeight;
     private JPanel cells[][];
-    private int laberint[][];
+   // private int laberint[][];
     private Random rand = new Random();
+    private int r;
+    private GenerationLaberint newLaberint;
     
     public PaintMap(int rowCount, int columnCount, int fieldWidth, int fieldHeight) {
+        newLaberint = new GenerationLaberint(rowCount, columnCount);
         
         setLayout(new GridLayout(rowCount, columnCount));
         this.mapWidth = fieldWidth;
@@ -39,297 +42,46 @@ public class PaintMap extends JPanel {
         cellSize = cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
         
         cells = new JPanel[rowCount][columnCount];
-        laberint = new int[rowCount][columnCount];
+        //laberint = new int[rowCount][columnCount];
         
-        for (int i = 0; i < rowCount; i++) {//////////////рандомим первоначальный массив с "тюремной решёткой"
-            for (int j = 0; j < columnCount; j++) {
-                
-                int finalI = i;
-                int finalJ = j;
-
-                ////////////////////////////////////////////
-                if (finalI % 2 == 0 || finalJ % 2 == 0) {
-                    laberint[i][j] = 0;
-                    
-                } else {
-                    laberint[i][j] = 1;
-                }
-                ////////////////////////////////////////////
-                
-                if (i == 0 && j == 3) {
-                    laberint[i][j] = 5;
-                }
-                
-                if (i == rowCount - 1 && j == columnCount - 4) {
-                    laberint[i][j] = 2;
-                }
-                
-                if (i == 1 && j == 1) {
-                    laberint[i][j] = 3;
-                }
-                
-            }
-        }
         
-        boolean go, check;
-        do {//////////////////////////чудо-цикл генерирующий лаберинт
-            go = true;
-            for (int i = 0; i < rowCount; i++) {/////////проверяет есть ли непосещённые клетки
-                for (int j = 0; j < columnCount; j++) {
-                    r = rand.nextInt(2);
-                    if (laberint[i][j] == 1) {
-                        go = false;
-                    }
-                    
-                    if (laberint[i][j] == 2 && r == 0 && i % 2 != 0 && j % 2 != 0) {///условия, проверяющие есть ли вокруг ПОСЕЩЁННЫХ клеток непосещённые
-
-                        if (i - 1 == 0 && j - 1 == 0 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i - 1 == 0 && j + 1 == columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i + 1 == rowCount - 1 && j - 1 == 0 && (laberint[i - 2][j] == 1 || laberint[i][j + 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i + 1 == rowCount - 1 && j + 1 == columnCount - 1 && (laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i - 1 == 0 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1 || laberint[i][j - 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i + 1 == rowCount - 1 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1 || laberint[i][j + 2] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (j - 1 == 0 && i - 1 != 0 && i + 1 != rowCount - 1 && (laberint[i][j + 2] == 1 || laberint[i - 2][j] == 1 || laberint[i + 2][j] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (j + 1 == columnCount - 1 && i - 1 != 0 && i + 1 != rowCount - 1 && (laberint[i][j - 2] == 1 || laberint[i + 2][j] == 1 || laberint[i - 2][j] == 1)) {
-                            laberint[i][j] = 3;
-                        } else if (i - 1 != 0 && i + 1 != rowCount - 1 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1 || laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            laberint[i][j] = 3;
-                        }
-                        
-                    }
-                }
-            }
-            
-            for (int i = 0; i < rowCount; i++) {/////////тут творится магия рандомного формирования лабринта
-                for (int j = 0; j < columnCount; j++) {
-                    check = false;
-                    if (laberint[i][j] == 3) {
-                        laberint[i][j] = 2;
-                        if (i - 1 == 0 && j - 1 == 0 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(2);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i - 1 == 0 && j + 1 == columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(2);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i + 1 == rowCount - 1 && j - 1 == 0 && (laberint[i - 2][j] == 1 || laberint[i][j + 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(2);
-                                if (r == 0) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i + 1 == rowCount - 1 && j + 1 == columnCount - 1 && (laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(2);
-                                if (r == 0) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i - 1 == 0 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1 || laberint[i][j - 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(3);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 1) {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i + 1 == rowCount - 1 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1 || laberint[i][j + 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(3);
-                                if (r == 0) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 1) {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (j - 1 == 0 && i - 1 != 0 && i + 1 != rowCount - 1 && (laberint[i][j + 2] == 1 || laberint[i - 2][j] == 1 || laberint[i + 2][j] == 1)) {
-                            while (check != true) {
-                                r = rand.nextInt(3);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 1) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (j + 1 == columnCount - 1 && i - 1 != 0 && i + 1 != rowCount - 1 && (laberint[i][j - 2] == 1 || laberint[i + 2][j] == 1 || laberint[i - 2][j] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(3);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 1) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                            
-                        } else if (i - 1 != 0 && i + 1 != rowCount - 1 && j - 1 != 0 && j + 1 != columnCount - 1 && (laberint[i + 2][j] == 1 || laberint[i][j + 2] == 1 || laberint[i - 2][j] == 1 || laberint[i][j - 2] == 1)) {
-                            
-                            while (check != true) {
-                                r = rand.nextInt(4);
-                                if (r == 0) {
-                                    if (laberint[i + 2][j] == 1) {
-                                        laberint[i + 1][j] = 2;
-                                        laberint[i + 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 1) {
-                                    if (laberint[i - 2][j] == 1) {
-                                        laberint[i - 1][j] = 2;
-                                        laberint[i - 2][j] = 3;
-                                        check = true;
-                                    }
-                                } else if (r == 2) {
-                                    if (laberint[i][j - 2] == 1) {
-                                        laberint[i][j - 1] = 2;
-                                        laberint[i][j - 2] = 3;
-                                        check = true;
-                                    }
-                                } else {
-                                    if (laberint[i][j + 2] == 1) {
-                                        laberint[i][j + 1] = 2;
-                                        laberint[i][j + 2] = 3;
-                                        check = true;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        i = 0;
-                        j = 0;
-                    }
-                    
-                }
-            }
-            
-        } while (go != true);
         
+//<editor-fold defaultstate="collapsed" desc="БОЛЬ">
+//        boolean go, check;
+//        do {//////////////////////////чудо-цикл генерирующий лаберинт
+//            go = true;
+//            for (int i = 0; i < rowCount; i++) {/////////проверяет есть ли непосещённые клетки
+//                for (int j = 0; j < columnCount; j++) {
+//                    r = rand.nextInt(2);
+//                    if (laberint[i][j] == 1) {
+//                        go = false;
+//                    }
+//                    
+//                    if (laberint[i][j] == 2 && r == 0 && i % 2 != 0 && j % 2 != 0) {///условия, проверяющие есть ли вокруг ПОСЕЩЁННЫХ клеток непосещённые
+//
+//                        
+//                        
+//                    }
+//                }
+//            }
+//            
+//            for (int i = 0; i < rowCount; i++) {/////////тут творится магия рандомного формирования лабринта
+//                for (int j = 0; j < columnCount; j++) {
+//                    check = false;
+//                    if (laberint[i][j] == 3) {
+//                        laberint[i][j] = 2;
+//                       
+//                        i = 0;
+//                        j = 0;
+//                    }
+//                    
+//                }
+//            }
+//            
+//        } while (go != true);
+//        
 
-        //<editor-fold defaultstate="collapsed" desc="БОЛЬ">
+        
 //        do {
 //            go = true;
 //
@@ -824,11 +576,11 @@ public class PaintMap extends JPanel {
                     {
                         setPreferredSize(new Dimension(cellSize, cellSize));
                         
-                        if (laberint[finalI][finalJ] == 0) {
+                        if (newLaberint.laberint[finalI][finalJ] == 0) {
                             setBackground(Color.BLACK);
-                        } else if (laberint[finalI][finalJ] == 2) {
+                        } else if (newLaberint.laberint[finalI][finalJ] == 2) {
                             setBackground(Color.MAGENTA);
-                        } else if (laberint[finalI][finalJ] == 5) {
+                        } else if (newLaberint.laberint[finalI][finalJ] == 5) {
                             setBackground(Color.CYAN);
                         }
                         
