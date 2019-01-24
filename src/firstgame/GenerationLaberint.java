@@ -30,7 +30,6 @@ public class GenerationLaberint {
         
         //<editor-fold defaultstate="collapsed" desc="Цикл с сеткой">
         
-
         for (int i = 0; i < rowCount; i++) {//////////////рандомим первоначальный массив с "тюремной решёткой"
             for (int j = 0; j < columnCount; j++) {
 
@@ -57,15 +56,17 @@ public class GenerationLaberint {
 
             }
         }
-//</editor-fold>
+        laberint[nowRow][nowCount] = 2;
+        //</editor-fold>
    
     onlyOne();
+    
     
     }
     
     
    private void onlyOne(){
-       laberint[nowRow][nowCount] = 2;
+       
    
        if (nowRow - 1 == 0 && nowCount - 1 == 0 && (laberint[nowRow + 2][nowCount] == 1 || laberint[nowRow][nowCount + 2] == 1)) {
            letsGo();
@@ -122,7 +123,7 @@ public class GenerationLaberint {
                             while (check != true) {
                                 r = rand.nextInt(2);
                                 if (r == 0) {
-                                    if (laberint[nowRow + 2][nowRow] == 1) {
+                                    if (laberint[nowRow + 2][nowCount] == 1) {
                                         laberint[nowRow + 1][nowCount] = 2;
                                         laberint[nowRow + 2][nowCount] = 2;
                                         nowRow+=2;

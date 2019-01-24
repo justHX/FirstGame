@@ -24,7 +24,6 @@ public class PaintMap extends JPanel {
     private int cellSize;
     private int mapWidth, mapHeight;
     private JPanel cells[][];
-   // private int laberint[][];
     private Random rand = new Random();
     private int r;
     private GenerationLaberint newLaberint;
@@ -42,10 +41,7 @@ public class PaintMap extends JPanel {
         cellSize = cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
         
         cells = new JPanel[rowCount][columnCount];
-        //laberint = new int[rowCount][columnCount];
-        
-        
-        
+ 
 //<editor-fold defaultstate="collapsed" desc="ЅќЋ№">
 //        boolean go, check;
 //        do {//////////////////////////чудо-цикл генерирующий лаберинт

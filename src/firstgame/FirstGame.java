@@ -12,7 +12,7 @@ public class FirstGame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        GameMap gm = new GameMap(41,41);
+        GameMap gm = new GameMap(11,11);
         FieldGame fg = new FieldGame(gm);
         fg.setVisible(true);
     }
