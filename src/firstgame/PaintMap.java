@@ -3,9 +3,10 @@ package firstgame;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.MatteBorder;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -25,7 +26,7 @@ public class PaintMap extends JPanel {
 
         MazeHelper.generateLattice(gm.map);
         gm.map[1][1] = PointType.AVAILABLE;
-        Point currentPosition = MazeHelper.generateStartAndEndPosition(gm.map);
+        PointMy currentPosition = MazeHelper.generateStartAndEndPosition(gm.map);
         MazeHelper.generatePath(gm.map, currentPosition);
 
 
@@ -85,7 +86,11 @@ public class PaintMap extends JPanel {
                 }
             }
         });
-        
+
+
+        SearchPath.maze = gm.map;
+        SearchPath.finalPointMy = new PointMy(gm.map.length - 1, gm.map[0].length - 4);
+        SearchPath.test(cells);
     }
     
 }

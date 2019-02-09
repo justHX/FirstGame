@@ -68,17 +68,17 @@ public class MazeHelper {
     /**
      * Randomly selects the next item from the list.
      *
-     * @param points       list of positions you can go to
+     * @param pointMIES       list of positions you can go to
      * @param maze         generated maze
-     * @param currentPoint current position in cycle
+     * @param currentPointMy current position in cycle
      * @return next position for cycle
      */
-    public static Point goToNextRandomPoint(List<Point> points, PointType[][] maze, Point currentPoint) {
-        Point nextPoint = points.get(RANDOM.nextInt(points.size()));
-        maze[nextPoint.x][nextPoint.y] = AVAILABLE;
-        maze[nextPoint.x != currentPoint.x ? nextPoint.x > currentPoint.x ? currentPoint.x + 1 : currentPoint.x - 1 : currentPoint.x]
-            [nextPoint.y != currentPoint.y ? nextPoint.y > currentPoint.y ? currentPoint.y + 1 : currentPoint.y - 1 : currentPoint.y] = AVAILABLE;
-        return nextPoint;
+    public static PointMy goToNextRandomPoint(List<PointMy> pointMIES, PointType[][] maze, PointMy currentPointMy) {
+        PointMy nextPointMy = pointMIES.get(RANDOM.nextInt(pointMIES.size()));
+        maze[nextPointMy.x][nextPointMy.y] = AVAILABLE;
+        maze[nextPointMy.x != currentPointMy.x ? nextPointMy.x > currentPointMy.x ? currentPointMy.x + 1 : currentPointMy.x - 1 : currentPointMy.x]
+            [nextPointMy.y != currentPointMy.y ? nextPointMy.y > currentPointMy.y ? currentPointMy.y + 1 : currentPointMy.y - 1 : currentPointMy.y] = AVAILABLE;
+        return nextPointMy;
     }
 
     /**
@@ -95,33 +95,50 @@ public class MazeHelper {
     /**
      * @param maze generated maze
      */
-    public static Point generateStartAndEndPosition(PointType[][] maze) {
+    public static PointMy generateStartAndEndPosition(PointType[][] maze) {
         maze[0][3] = AVAILABLE;
-        Point endPoint = new Point(maze.length - 1, maze[0].length - 4);
-        maze[endPoint.x][endPoint.y] = AVAILABLE;
-        return endPoint;
+        PointMy endPointMy = new PointMy(maze.length - 1, maze[0].length - 4);
+        maze[endPointMy.x][endPointMy.y] = AVAILABLE;
+        return endPointMy;
     }
 
     /**
-     * Searches for all available points closest to the current point.
+     * Searches for all available points closest to the current PointMy.
      *
      * @param maze            generated maze
      * @param currentPosition the position next to which you need to find available cells for the transition
      * @return positions found
      */
-    public static List<Point> getNearestAvailablePoints(PointType[][] maze, Point currentPosition) {
-        List<Point> points = new ArrayList<>();
+    public static List<PointMy> getNearestAvailablePoints(PointType[][] maze, PointMy currentPosition) {
+        List<PointMy> pointMIES = new ArrayList<>();
         if (currentPosition.x - 1 != 0 && maze[currentPosition.x - 2][currentPosition.y] == PRE_AVAILABLE) {
-            points.add(new Point(currentPosition.x - 2, currentPosition.y));
+            pointMIES.add(new PointMy(currentPosition.x - 2, currentPosition.y));
         }
         if (currentPosition.y - 1 != 0 && maze[currentPosition.x][currentPosition.y - 2] == PRE_AVAILABLE) {
-            points.add(new Point(currentPosition.x, currentPosition.y - 2));
+            pointMIES.add(new PointMy(currentPosition.x, currentPosition.y - 2));
         }
         if (currentPosition.x + 1 < maze.length - 1 && maze[currentPosition.x + 2][currentPosition.y] == PRE_AVAILABLE) {
-            points.add(new Point(currentPosition.x + 2, currentPosition.y));
+            pointMIES.add(new PointMy(currentPosition.x + 2, currentPosition.y));
         }
         if (currentPosition.y + 1 < maze[0].length - 1 && maze[currentPosition.x][currentPosition.y + 2] == PRE_AVAILABLE) {
-            points.add(new Point(currentPosition.x, currentPosition.y + 2));
+            pointMIES.add(new PointMy(currentPosition.x, currentPosition.y + 2));
+        }
+        return pointMIES;
+    }
+
+    public static List<PointMy> getNearestAvailablePoints2(PointType[][] maze, PointMy currentPosition) {
+        List<PointMy> points = new ArrayList<>();
+        if (currentPosition.x != 0 && maze[currentPosition.x - 1][currentPosition.y] == AVAILABLE) {
+            points.add(new PointMy(currentPosition.x - 1, currentPosition.y));
+        }
+        if (currentPosition.y  != 0 && maze[currentPosition.x][currentPosition.y - 1] == AVAILABLE) {
+            points.add(new PointMy(currentPosition.x, currentPosition.y - 1));
+        }
+        if (currentPosition.x < maze.length - 1 && maze[currentPosition.x + 1][currentPosition.y] == AVAILABLE) {
+            points.add(new PointMy(currentPosition.x + 1, currentPosition.y));
+        }
+        if (currentPosition.y  < maze[0].length - 1 && maze[currentPosition.x][currentPosition.y + 1] == AVAILABLE) {
+            points.add(new PointMy(currentPosition.x, currentPosition.y + 1));
         }
         return points;
     }
@@ -131,14 +148,14 @@ public class MazeHelper {
      *
      * @param maze generated maze
      */
-    public static void generatePath(PointType[][] maze, Point currentPosition) {
-        List<Point> points;
+    public static void generatePath(PointType[][] maze, PointMy currentPosition) {
+        List<PointMy> pointMIES;
         do {
-            points = getNearestAvailablePoints(maze, currentPosition);
-            if (points.size() > 0) {
-                currentPosition = goToNextRandomPoint(points, maze, new Point(currentPosition.x, currentPosition.y));
+            pointMIES = getNearestAvailablePoints(maze, currentPosition);
+            if (pointMIES.size() > 0) {
+                currentPosition = goToNextRandomPoint(pointMIES, maze, new PointMy(currentPosition.x, currentPosition.y));
             }
-        } while (points.size() != 0);
+        } while (pointMIES.size() != 0);
         moveToAvailablePosition(maze);
     }
     
@@ -151,9 +168,9 @@ public class MazeHelper {
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[0].length; j++) {
                 if (i % 2 != 0 && j % 2 != 0) {
-                    List<Point> points = getNearestAvailablePoints(maze, new Point(i, j));
-                    if (points.size() > 0) {
-                        generatePath(maze, new Point(i, j));
+                    List<PointMy> pointMIES = getNearestAvailablePoints(maze, new PointMy(i, j));
+                    if (pointMIES.size() > 0) {
+                        generatePath(maze, new PointMy(i, j));
                         return;
                     }
                 }
