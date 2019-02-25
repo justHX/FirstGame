@@ -6,12 +6,11 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 
 
 @SuppressWarnings("WeakerAccess")
 public class PaintMap extends JPanel {
-    
+    private int firstPush = 0;
     private int thisY = 0;
     private int thisX = 3;
     private JPanel[][] cells;
@@ -84,13 +83,18 @@ public class PaintMap extends JPanel {
                     JOptionPane.showMessageDialog(null, "Поздравляю, Вы прошли игру", "Скромное окно о победе", JOptionPane.INFORMATION_MESSAGE);
                     System.exit(0);
                 }
+                
+                if(e.getKeyCode() == KeyEvent.VK_F11 && firstPush == 0){
+                    SearchPath.maze = gm.map;
+                    SearchPath.finalPointMy = new PointMy(gm.map.length - 1, gm.map[0].length - 4);
+                    SearchPath.searchPath(cells);
+                    firstPush++;
+                }
             }
         });
 
 
-        SearchPath.maze = gm.map;
-        SearchPath.finalPointMy = new PointMy(gm.map.length - 1, gm.map[0].length - 4);
-        SearchPath.test(cells);
+        
     }
     
 }
