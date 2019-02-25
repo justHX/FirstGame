@@ -15,7 +15,7 @@ import static firstgame.PointType.*;
  */
 @SuppressWarnings("WeakerAccess")
 public class MazeHelper {
-
+    public static int ImgSize;
     public static final Color DEFAULT_AVAILABLE_COLOR;
     public static final Color DEFAULT_NOT_AVAILABLE_COLOR = BLACK;
     private static final Random RANDOM = new Random();
@@ -62,6 +62,7 @@ public class MazeHelper {
         int cellSizeByWidth = panelSize.width / gameMap.map.length;
         int cellSizeByHeight = panelSize.height / gameMap.map[0].length;
         int cellSize = cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
+        ImgSize = cellSize;
         return new Dimension(cellSize, cellSize);
     }
 
