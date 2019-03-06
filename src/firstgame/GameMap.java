@@ -1,8 +1,10 @@
 package firstgame;
 
 
+import java.io.Serializable;
+
 @SuppressWarnings("WeakerAccess")
-public class GameMap {
+public class GameMap  implements Serializable {
 
     public final PointType[][] map;
 

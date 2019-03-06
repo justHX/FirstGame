@@ -3,6 +3,7 @@ package firstgame;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.io.IOException;
 import javax.swing.*;
 
 
@@ -22,7 +23,13 @@ public class FieldGame extends JFrame {
         JPanel panel = new JPanel() {{
             setSize(FieldGame.WIDTH - 40, FieldGame.HEIGHT - 40);
             setLayout(new FlowLayout());
-            add(new PaintMap(gm, getSize()));
+            try {
+                add(new PaintMap(gm, getSize()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }};
 
         this.add(panel);
