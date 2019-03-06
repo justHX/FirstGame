@@ -28,7 +28,7 @@ public class MazeHelper {
 
     static {
         Color[] colors = new Color[] {
-            CYAN, YELLOW, ORANGE, BLUE, WHITE, RED, PINK, GREEN
+            CYAN, YELLOW, ORANGE, BLUE, RED, PINK, GREEN
         };
         int randomIndex = RANDOM.nextInt(colors.length);
         DEFAULT_AVAILABLE_COLOR = colors[randomIndex];

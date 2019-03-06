@@ -3,38 +3,34 @@ package firstgame;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
-
+import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 
 
 @SuppressWarnings("WeakerAccess")
 public class PaintMap extends JPanel {
+    
     private int thisY = 0;
     private int thisX = 3;
     private JPanel[][] cells;
-    private JLabel ob = new JLabel();
-    private ImageIcon icon;
-
 
 
     public PaintMap(final GameMap gm, final Dimension panelSize) {
-        icon =  new ImageIcon("N:/Pictures/ava14531426381.png");
-
         setFocusable(true);
         int rowCount = gm.map.length;
         int columnCount = gm.map[0].length;
         setLayout(new GridLayout(gm.map.length, gm.map[0].length));
 
+
         MazeHelper.generateLattice(gm.map);
         gm.map[1][1] = PointType.AVAILABLE;
         PointMy currentPosition = MazeHelper.generateStartAndEndPosition(gm.map);
         MazeHelper.generatePath(gm.map, currentPosition);
+
+
+
         cells = new JPanel[rowCount][columnCount];
 
         for (int i = 0; i < rowCount; i++) {
@@ -45,17 +41,11 @@ public class PaintMap extends JPanel {
                 
                 cells[i][j] = new JPanel() {{
                     setPreferredSize(MazeHelper.getCellPreferSize(gm, panelSize));
+
                     if (PointType.NOT_AVAILABLE.equals(gm.map[finalI][finalJ])) {
                         setBackground(MazeHelper.DEFAULT_NOT_AVAILABLE_COLOR);
                     } else if (PointType.AVAILABLE.equals(gm.map[finalI][finalJ])) {
                         setBackground(MazeHelper.DEFAULT_AVAILABLE_COLOR);
-                    }
-
-                    if(finalJ ==1 && finalI == 1){
-                      Image im =  icon.getImage().getScaledInstance(MazeHelper.ImgSize-5, MazeHelper.ImgSize-5, Image.SCALE_DEFAULT);
-                      icon = new ImageIcon(im);
-                      ob.setIcon(icon);
-                      add(ob, BorderLayout.CENTER);
                     }
 
                     setBorder(new MatteBorder(1, 1, finalI == rowCount - 1 ? 1 : 0, finalJ == columnCount - 1 ? 1 : 0, Color.DARK_GRAY));
