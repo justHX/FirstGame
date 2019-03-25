@@ -1,4 +1,4 @@
-package firstgame;
+package firstgame.application;
 
 import java.awt.*;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static java.awt.Color.*;
-import static firstgame.PointType.*;
+import static firstgame.application.PointType.*;
 
 
 /**

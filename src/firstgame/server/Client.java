@@ -1,17 +1,19 @@
-package Server;
+package firstgame.server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Clients {
+
+@SuppressWarnings("WeakerAccess")
+public class Client {
+
     public Socket socket;
     public ObjectInputStream objectInputStream;
     public ObjectOutputStream objectOutputStream;
 
-    public Clients(Socket socket) {
-
+    public Client(Socket socket) {
         try {
             this.socket = socket;
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -19,6 +21,5 @@ public class Clients {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

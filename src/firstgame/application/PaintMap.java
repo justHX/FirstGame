@@ -1,9 +1,10 @@
-package firstgame;
+package firstgame.application;
+
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.util.function.Consumer;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
@@ -11,28 +12,20 @@ import javax.swing.border.MatteBorder;
 
 @SuppressWarnings("WeakerAccess")
 public class PaintMap extends JPanel {
-    private int firstPush = 0;
+    private final JPanel[][] cells;
+
+    private boolean firstPush = false;
     private int thisY = 0;
     private int thisX = 3;
-    private JPanel[][] cells;
-    private Point secondPoint = new Point();
+
     private Point oldPoint = new Point();
 
 
-    public PaintMap(GameMap gm, final Dimension panelSize) throws IOException, ClassNotFoundException {
+    public PaintMap(final GameMap gm, final Dimension panelSize, Consumer<Point> sendPointConsumer) {
         setFocusable(true);
         int rowCount = gm.map.length;
         int columnCount = gm.map[0].length;
         setLayout(new GridLayout(gm.map.length, gm.map[0].length));
-        InternetConnect internet = new InternetConnect();
-
-
-//        MazeHelper.generateLattice(gm.map);
-//        gm.map[1][1] = PointType.AVAILABLE;
-//        PointMy currentPosition = MazeHelper.generateStartAndEndPosition(gm.map);
-//        MazeHelper.generatePath(gm.map, currentPosition);
-
-        gm = (GameMap) internet.objectInputStream.readObject();
 
         cells = new JPanel[rowCount][columnCount];
 
@@ -42,13 +35,12 @@ public class PaintMap extends JPanel {
                 int finalI = i;
                 int finalJ = j;
 
-                GameMap finalGm = gm;
                 cells[i][j] = new JPanel() {{
-                    setPreferredSize(MazeHelper.getCellPreferSize(finalGm, panelSize));
+                    setPreferredSize(MazeHelper.getCellPreferSize(gm, panelSize));
 
-                    if (PointType.NOT_AVAILABLE.equals(finalGm.map[finalI][finalJ])) {
+                    if (PointType.NOT_AVAILABLE.equals(gm.map[finalI][finalJ])) {
                         setBackground(MazeHelper.DEFAULT_NOT_AVAILABLE_COLOR);
-                    } else if (PointType.AVAILABLE.equals(finalGm.map[finalI][finalJ])) {
+                    } else if (PointType.AVAILABLE.equals(gm.map[finalI][finalJ])) {
                         setBackground(MazeHelper.DEFAULT_AVAILABLE_COLOR);
                     }
 
@@ -59,30 +51,6 @@ public class PaintMap extends JPanel {
             }
         }
         cells[0][3].setBackground(Color.CYAN);
-
-
-        GameMap finalGm1 = gm;
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    try {
-                        secondPoint = (Point) internet.objectInputStream.readObject();
-                        if(oldPoint.x!=0 && oldPoint.y!=0)
-                        cells[oldPoint.y][oldPoint.x].setBackground(MazeHelper.DEFAULT_AVAILABLE_COLOR);
-                        cells[secondPoint.y][secondPoint.x].setBackground(Color.GRAY);
-                        oldPoint.setLocation(secondPoint);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
-                        e1.printStackTrace();
-                    }
-
-                }
-            }
-        }).start();
 
 
         addKeyListener(new KeyAdapter() {
@@ -108,7 +76,7 @@ public class PaintMap extends JPanel {
                     thisY += yOffset;
                     thisX += xOffset;
 
-                  internet.sendPoint(new Point(thisX, thisY));
+                  sendPointConsumer.accept(new Point(thisX, thisY));
 
                 }
 
@@ -117,15 +85,23 @@ public class PaintMap extends JPanel {
                     System.exit(0);
                 }
 
-                if (e.getKeyCode() == KeyEvent.VK_P && firstPush == 0) {
-                    SearchPath.maze = finalGm1.map;
-                    SearchPath.finalPointMy = new PointMy(finalGm1.map.length - 1, finalGm1.map[0].length - 4);
+                if (e.getKeyCode() == KeyEvent.VK_P && !firstPush) {
+                    SearchPath.maze = gm.map;
+                    SearchPath.finalPointMy = new PointMy(gm.map.length - 1, gm.map[0].length - 4);
                     SearchPath.searchPath(cells);
-                    firstPush++;
+                    firstPush = true;
                 }
             }
         });
 
+    }
+
+    public void drawEnemyPosition(Point point) {
+        if (oldPoint.x != 0 && oldPoint.y != 0) {
+            cells[oldPoint.y][oldPoint.x].setBackground(MazeHelper.DEFAULT_AVAILABLE_COLOR);
+        }
+        cells[point.y][point.x].setBackground(Color.GRAY);
+        oldPoint.setLocation(point);
     }
 
 }

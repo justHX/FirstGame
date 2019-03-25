@@ -1,4 +1,4 @@
-package firstgame;
+package firstgame.application;
 
 
 /**

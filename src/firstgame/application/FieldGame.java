@@ -1,20 +1,19 @@
-package firstgame;
+package firstgame.application;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.io.IOException;
+import java.awt.*;
+import java.util.function.Consumer;
 import javax.swing.*;
 
 
-@SuppressWarnings("WeakerAccess")
 public class FieldGame extends JFrame {
 
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 1000;
 
 
-    public FieldGame(final GameMap gm) {
+    private PaintMap paintMap;
+
+    public FieldGame(final GameMap gm, final Consumer<Point> sendPointConsumer) {
         this.setTitle("First game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -23,19 +22,17 @@ public class FieldGame extends JFrame {
         JPanel panel = new JPanel() {{
             setSize(FieldGame.WIDTH - 40, FieldGame.HEIGHT - 40);
             setLayout(new FlowLayout());
-            try {
-                add(new PaintMap(gm, getSize()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
         }};
+
+        paintMap = new PaintMap(gm, getSize(), sendPointConsumer);
+        panel.add(paintMap);
 
         this.add(panel);
 
     }
 
-
+    public PaintMap getPaintMap() {
+        return paintMap;
+    }
 }
 
